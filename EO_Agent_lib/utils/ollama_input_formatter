@@ -1,0 +1,186 @@
+class formatter:
+    def __init__(self):
+        pass
+    
+    def format_vegetation_data(
+        self,
+        data_dict
+        ):
+        formatted_data_dict=dict()
+        
+        def format_cell_dict(cell_dict):
+            formatted_cell_dict=dict()
+            
+            def format_area_coverage_info(area_coverage_info_dict):
+                
+                formatted_area_coverage_info_dict=dict()
+                    
+                for k,v in area_coverage_info_dict.items():
+                        formatted_area_coverage_info_dict[k]=round(v,9)
+                        
+                return formatted_area_coverage_info_dict
+            
+            def format_ratio_coverage_info(ratio_coverage_info_dict):
+                
+                formatted_ratio_coverage_info_dict=dict()
+                
+                for k,v in ratio_coverage_info_dict.items():
+                        formatted_ratio_coverage_info_dict[k]=round(v,2)
+                        
+                return formatted_ratio_coverage_info_dict
+                    
+            
+            for k,v in cell_dict.items():
+                
+                if k=='total area covered by cell in km2':
+                    formatted_cell_dict['total area covered by cell in km2']=round(v,9)
+                    
+                elif k=='area covered by cell':
+                    formatted_cell_dict['area covered by cell km2']=round(v,9)
+                
+                
+                elif k == "vegetation class coverage area in km2":
+                    formatted_cell_dict[k]=v.copy()
+                    
+                    formatted_cell_dict[k]['coverage_info']=format_area_coverage_info(
+                        v['coverage_info']
+                        )
+                    
+                elif k == "vegetation class coverage %":
+                    formatted_cell_dict[k]=v.copy()
+                    
+                    formatted_cell_dict[k]['coverage_info']=format_ratio_coverage_info(
+                        v['coverage_info']
+                        )
+
+                elif k == "global morans I":
+                    moran_i=v[0]
+                    p_value = v[1]
+                    formatted_cell_dict[k]={
+                        "moran's I":moran_i,
+                        "p-value":p_value
+                    }
+
+                else: formatted_cell_dict[k]=v.copy()
+                
+            return formatted_cell_dict
+                
+        
+        cell_map={
+            'cell_1':"upper left",
+            'cell_2':"upper middle",
+            'cell_3':"upper right",
+            'cell_4':"middle left",
+            'cell_5':"center",
+            'cell_6':"middle right",
+            'cell_7':"lower left",
+            'cell_8':"lower middle",
+            'cell_9':"lower right"}
+        
+        if len(data_dict)>0:
+            for cell, data in data_dict.items():
+                formatted_data_dict[cell_map[cell]] = format_cell_dict(data)
+            
+        return formatted_data_dict
+    
+    def format_built_data(
+        self,
+        data_dict
+        ):
+        formatted_data_dict=dict()
+        
+        def format_cell_dict(cell_dict):
+            formatted_cell_dict=dict()
+            
+            def format_area_coverage_info(area_coverage_info_dict):
+                
+                formatted_area_coverage_info_dict=dict()
+                    
+                for k,v in area_coverage_info_dict.items():
+                        formatted_area_coverage_info_dict[k]=round(v,9)
+                        
+                return formatted_area_coverage_info_dict
+            
+            def format_ratio_coverage_info(ratio_coverage_info_dict):
+                
+                formatted_ratio_coverage_info_dict=dict()
+                
+                for k,v in ratio_coverage_info_dict.items():
+                        formatted_ratio_coverage_info_dict[k]=round(v,2)
+                        
+                return formatted_ratio_coverage_info_dict
+                    
+            
+            for k,v in cell_dict.items():
+                if k == "built-up class coverage %":
+                    
+                    formatted_cell_dict[k]={}
+                    
+                    for k2,v2 in v.items():
+                        if k2=="coverage":
+                            formatted_cell_dict[k]["coverage_info"]=v2.copy()
+                            
+                        else:
+                            formatted_cell_dict[k][k2]=v2
+                            
+                    
+                    formatted_cell_dict[k]['coverage_info']=format_ratio_coverage_info(
+                        v['coverage']
+                        )
+                    
+                else:
+                    formatted_cell_dict[k]=v
+                
+            return formatted_cell_dict
+                
+        
+        cell_map={
+            'cell_1':"upper left",
+            'cell_2':"upper middle",
+            'cell_3':"upper right",
+            'cell_4':"middle left",
+            'cell_5':"center",
+            'cell_6':"middle right",
+            'cell_7':"lower left",
+            'cell_8':"lower middle",
+            'cell_9':"lower right"}
+        
+        if len(data_dict)>0:
+            for cell, data in data_dict.items():
+                formatted_data_dict[cell_map[cell]] = format_cell_dict(data)
+            
+        return formatted_data_dict
+    
+    def format_overall_data(
+        self,
+        data_dict
+        ):
+        
+        formatted_data_dict=dict()
+        
+        if len(data_dict)>0:
+            for k,v in data_dict.items():
+                if k=='total area in km2':
+                    formatted_data_dict[k]=round(v,9)
+                else:
+                    formatted_data_dict[k]=v.copy()
+                
+        return formatted_data_dict
+    
+    def format_water_data(
+        self,
+        data_dict
+        ):
+        formatted_data_dict=dict()
+        
+        if len(data_dict)>0:
+            for k,v in data_dict.items():
+                
+                formatted_v=dict()
+                formatted_v["bounding box"]=v["bounding box"].copy()
+
+                formatted_v["area in m2"]=round(v["area in m2"],3)
+                
+                formatted_data_dict[f"water body {k}"]=formatted_v
+            
+        return formatted_data_dict
